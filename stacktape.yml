@@ -1,0 +1,96 @@
+serviceName: posts-app
+
+scripts:
+  buildFrontend:
+    type: local-script
+    properties:
+      executeCommand: $Format('yarn client:build --mode {}', $Stage())
+  generatePrismaClient:
+    type: local-script
+    properties:
+      executeCommand: npx prisma generate
+  migrateDb:
+    type: local-script-with-bastion-tunneling
+    properties:
+      executeCommand: npx prisma db push --skip-generate --accept-data-loss
+      bastionResource: bastion
+      connectTo:
+        - mainDatabase
+
+directives:
+  - name: getDomain
+    filePath: directives.ts:getDomain
+
+variables:
+  domain: $getDomain($Stage())
+
+hooks:
+  beforeDeploy:
+    - scriptName: buildFrontend
+    - scriptName: generatePrismaClient
+  afterDeploy:
+    - scriptName: migrateDb
+
+resources:
+  bastion:
+    type: bastion
+
+  mainUserPool:
+    type: user-auth-pool
+    properties:
+      userVerificationType: email-code
+      passwordPolicy:
+        minimumLength: 8
+      callbackURLs:
+        - $Format('https://{}/', $Var().domain)
+
+  mainFirewall:
+    type: web-app-firewall
+    properties:
+      scope: cdn
+
+  webService:
+    type: web-service
+    properties:
+      packaging:
+        type: stacktape-image-buildpack
+        properties:
+          entryfilePath: ./server/index.ts
+      resources:
+        cpu: 0.25
+        memory: 512
+      connectTo:
+        - mainDatabase
+        - mainUserPool
+      cors:
+        enabled: true
+
+  mainDatabase:
+    type: relational-database
+    properties:
+      credentials:
+        masterUserName: $Secret('postgres-credentials.userName')
+        masterUserPassword: $Secret('postgres-credentials.password')
+      accessibility:
+        accessibilityMode: vpc
+      engine:
+        type: postgres
+        properties:
+          primaryInstance:
+            instanceSize: db.t4g.micro
+
+  webBucket:
+    type: hosting-bucket
+    properties:
+      uploadDirectoryPath: ./dist
+      hostingContentType: single-page-app
+      useFirewall: mainFirewall
+      injectEnvironment:
+        - name: VITE_USERPOOL_ID
+          value: $ResourceParam('mainUserPool', 'id')
+        - name: VITE_USERPOOL_CLIENT_ID
+          value: $ResourceParam('mainUserPool', 'clientId')
+        - name: VITE_API_URL
+          value: $ResourceParam('webService', 'url')
+      customDomains:
+        - domainName: $getDomain($Stage())

@@ -1,0 +1,97 @@
+.App {
+  min-height: 100vh;
+  padding: 0 20% 0 20%;
+  background-color: #282c34;
+}
+
+h1,
+h2 {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+h1 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin: 0;
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+p,
+li,
+a,
+th,
+td,
+input,
+button,
+textarea,
+label {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 24px;
+  color: rgba(255, 255, 255, 0.87);
+  margin: 3px;
+}
+
+.Posts-container {
+  margin-bottom: 50px;
+}
+
+.Post-container {
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.87);
+  margin-bottom: 50px;
+}
+
+.Post-field-row {
+  margin: 8px 0px 8px 10px;
+}
+
+.Post-field-label {
+  font-size: 1rem;
+  text-align: left;
+  font-weight: bold;
+}
+
+.Form-input-label {
+  text-align: left;
+  font-weight: bold;
+  display: block;
+  margin: 5px 0px -5px 3px;
+}
+
+.Form-input {
+  border-radius: 4px;
+  width: 300px;
+  color: #282c34;
+}
+
+.Form-submit-buttom {
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 25px;
+  font-weight: bold;
+  width: 308px;
+  color: #282c34;
+}
+
+.Footer {
+  width: 100%;
+  height: 100px;
+  padding-top: 100px;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
