@@ -14,6 +14,8 @@
     "format": "npx prettier . --write"
   },
   "dependencies": {
+    "@aws-amplify/auth": "^5.5.0",
+    "@aws-amplify/core": "^5.5.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.354.0",
     "@prisma/client": "^4.15.0",
     "@tanstack/react-query": "^4.29.12",
